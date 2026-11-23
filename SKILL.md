@@ -1,13 +1,26 @@
 ---
 name: desenho-animado
-description: Faz um short vertical de ~15-70 s contando uma história no estilo "bonecos 2D num mundo 3D colorido" (bonecos chapados de cabeça de feijão com contorno, cidade/mundo 3D pintado com contorno preto, céu saturado, fundo desfocado, câmera deslizando, narração, sons e música feitos por código), renderizado com three.js dentro do Remotion. Exemplos prontos: a Torre de Pisa (templates/pisa) e a ponte (templates/bridge). Use quando pedirem "faz um desenho animado contando a história de…", "um short animado nesse estilo", "igual ao da Torre de Pisa", uma história de história/ciência com bonecos em 3D, ou "usa a skill de desenho animado".
+description: Faz um short vertical de ~15-70 s contando uma história em dois estilos, à escolha do usuário - 2D ("bonecos 2D chapados num mundo 3D colorido", como a Torre de Pisa) ou 3D (bonecos 3D de verdade, com volume, luz, sombra e a câmera girando em volta, como o Santos Dumont) - com mundo 3D pintado com contorno preto, céu saturado, fundo desfocado, câmera deslizando, narração, sons e música feitos por código, renderizado com three.js dentro do Remotion. Exemplos prontos: a Torre de Pisa (templates/pisa, 2D), a ponte (templates/bridge, 2D) e o Santos Dumont no aeroporto (templates/dumont3d, 3D). Use quando pedirem "faz um desenho animado contando a história de…", "um short animado nesse estilo", "igual ao da Torre de Pisa", uma história de história/ciência com bonecos em 3D, ou "usa a skill de desenho animado".
 ---
 
 # Desenho animado 2D/3D (three.js + Remotion)
 
+## PRIMEIRA COISA: pergunte se é 2D ou 3D
+Antes de qualquer outra coisa (instalação, roteiro, cena), pergunte ao usuário, numa pergunta só:
+
+> Você quer o desenho em **2D** (bonecos chapados, tipo figurinha, num mundo 3D, como a Torre de Pisa) ou em **3D**
+> (bonecos 3D de verdade, com volume, luz, sombra e a câmera girando em volta deles, como o Santos Dumont)?
+
+- **2D** → siga o passo a passo abaixo partindo de `templates/pisa/` (ou `templates/bridge/`).
+- **3D** → siga o mesmo passo a passo, mas parta de `templates/dumont3d/` e leia a seção **"Modo 3D"** no fim deste
+  arquivo antes de mexer nos bonecos e na câmera.
+- Se a pessoa já disse no pedido ("com bonecos em 3D", "em 2D"), não pergunte de novo: use o que ela pediu.
+
 Exemplos prontos:
 - **A Torre de Pisa** (`templates/pisa/`, composição `PisaShort`, 1080x1920, 30 fps): 12,6 s na voz do narrador, 6 cenas.
 - **A ponte** (`templates/bridge/`, composição `BridgeShort`): 67 s, o primeiro exemplo do estilo.
+- **O Santos Dumont em 3D** (`templates/dumont3d/`, composição `Dumont3D`): ~20 s, bonecos 3D, aeroporto de Guarulhos →
+  Paris 1906 → de volta ao balcão. Fotos em `references/3d/`.
 - Estudo do estilo: `references/` (STYLE_BIBLE.md, reports/*.md, frames/, sheets/).
 
 As referências são material de estudo.
@@ -26,8 +39,9 @@ Regras padrão (o usuário pode mudar):
 
 ## Instalação (primeira vez)
 1. Copie esta pasta para `~/.claude/skills/desenho-animado/`.
-2. Crie o projeto: copie `templates/projeto/` para uma pasta nova, depois `templates/pisa/` e `templates/bridge/` para
-   `src/videos/pisa/` e `src/videos/bridge/` dela, e rode `npm install`.
+2. Crie o projeto: copie `templates/projeto/` para uma pasta nova, depois `templates/pisa/`, `templates/bridge/` e
+   `templates/dumont3d/` para `src/videos/pisa/`, `src/videos/bridge/` e `src/videos/dumont3d/` dela, e rode
+   `npm install`. (O 3D usa o contorno, a lente e a cor de `src/videos/pisa/`, então a pasta da Pisa precisa existir.)
 3. Confira que o Node, o ffmpeg e o Google Chrome estão instalados.
 
 ## Passo a passo
@@ -156,3 +170,52 @@ story.ts, no layout do build.ts/world.ts e nos papéis do cast.ts.
 - Objeto a menos de ~2 m da lente vira mancha gigante cortada na borda.
 - Placa pintada com sol de lado fica cinza e ilegível: use material sem luz na face da placa.
 - Espera parada lê como congelada: toda espera precisa de um zoom lento.
+
+## Modo 3D (bonecos 3D de verdade)
+Parta de `templates/dumont3d/` (composição `Dumont3D`). O mundo, a luz, o contorno, a lente e a cor são os mesmos do 2D
+(ele importa `../pisa/ink`, `../pisa/lensblur` e `../pisa/grade`); o que muda são os bonecos e a câmera.
+
+**Arquivos**
+- `chars.ts`: os bonecos 3D.
+  - `new Char(look)`: `shirt`, `skin`, `hat` (`panama`, `top`, `bowler`, `cap`, `bun`, `curly`, `hair`, `none`), `hatCol`,
+    `hair`, `mustache`, `collar`, `tie`, `skirt`, `scale`.
+  - Corpo de feijão inteiro na cor da roupa (sem pescoço), cabeça cor de pele com cabelo, braços e pernas de dois pedaços
+    com **cotovelo e joelho que dobram**, mãozinha e sapato redondos. Rosto desenhado em canvas na frente da cabeça
+    (camada `NOINK`): `smile`, `grin`, `laugh`, `shock`, `proud`, `neutral`, `cheer`, `talk` (boca mexendo com `mouth`).
+  - `pose({...})` todo quadro: `walk` (fase da caminhada, com joelho dobrando e ginga), `armL/armR` (abrir pro lado),
+    `fwdL/fwdR` (levantar pra frente), `elbowL/elbowR`, `lean`, `hop`, `squash`, `tilt`, `nod`, `face`, `blink`.
+    Respiração e chapéu balançando já vêm prontos.
+  - `hold`: grupo preso na mão direita (a mala do Santos Dumont é `suitcase()`); `roller(cor)` é mala de rodinha.
+  - Sombreado em degraus pela textura `GRAD` (3 tons). Se o rosto ficar sujo/escuro, suba o tom mais escuro.
+- `scene.ts`: o mundo e a história.
+  - `T`: o instante de cada palavra-chave (s). `SHOTS`: cenas com quadros a/b e luz `day`/`golden`. `FLASHES`: flash
+    branco nas trocas de lugar/tempo.
+  - `DumontWorld.update(f)`: pose de tudo no quadro `f`. Cada cena é um `if (s.id === …)`.
+  - Gestos com impulso: `gest(t0, d)` recua um pouco antes e passa do ponto depois (nada de braço de robô); `flap()`
+    mexe a boca enquanto fala.
+  - `KEYS`: câmera por cena `{t, pos, look, fov, roll}`, com `CUTS` para cortes secos; `camAt` desliza com smootherstep e
+    treme nos impactos (`kick`).
+  - `ANCH` + `warpF`: estica a coreografia pro tempo da SUA narração. Grave a voz, tire o tempo das palavras e ponha
+    `[tempo na voz, tempo na coreografia]` de cada palavra-chave.
+  - Dois lugares num mundo só: o aeroporto fica na origem e Paris em `x + 1000` (`PX`). Use o mesmo truque pra mudar de
+    lugar sem recarregar nada.
+- `Dumont.tsx`: a composição (mesma cadeia de acabamento da Torre de Pisa).
+
+**Conferência**: `COMP=Dumont3D node scripts/bridge-stills.mjs out/<nome>/x_ 30,120,200,290,375,520 0.4`.
+**Render**: `npx remotion render src/index.ts Dumont3D out/<nome>/video.mp4 --codec h264 --crf 16 --gl=angle`
+(no Mac, `TMPDIR=<pasta com espaço>` e `--browser-executable` do Chrome).
+
+**Consertos do 3D (o que deu errado no Santos Dumont e como resolver)**
+- **Bonecos de manequim** (cabeça branca, braço duro, tudo robótico; foto em `references/3d/erro_manequim.jpg`): cabeça
+  cor de pele com cabelo, corpo de feijão na cor da roupa, braços e pernas com cotovelo e joelho, ginga na caminhada,
+  respiração e gestos com impulso (`gest`). Resultado em `references/3d/consertado.jpg`.
+- **Câmera dentro da cabeça do personagem**: nos diálogos, faça um plano de cada um (câmera atrás e ao lado de quem
+  escuta, olhando pra quem fala), nunca a câmera entre os dois. Confira a distância da câmera até cada cabeça (> 0,8 m).
+- **Aeroporto pálido e vazio**: gente andando no fundo com mala de rodinha (`walkers`, longe da câmera, em z −12), cartazes
+  coloridos, plantas, painel de partidas; cores mais quentes.
+- **Avião antigo parecendo um monte de caixas**: faça o 14-Bis como pipa de pano e bambu - células abertas com pano
+  translúcido, varas finas em todas as arestas, asas em V, hélice atrás (veja `bis14()`).
+- **Figurante cruzando na frente da câmera** ou **planta tapando o plano**: tire do caminho da linha de visão.
+
+**Personagem do canal**: crie um `Char` com o cabelo, a roupa e o jeito da pessoa (cachos = várias esferas de cabelo
+sobrepostas na cabeça) e mostre de frente, de lado e de costas antes de usar na história.

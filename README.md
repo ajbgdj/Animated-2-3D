@@ -1,12 +1,15 @@
 # Animated 2D/3D Xavier
 
-A skill grátis do vídeo **"Como Fazer Shorts Animados Virais Usando o Claude (Fluxo Completo)"**, em português.
+A skill grátis dos vídeos **"Como Fazer Shorts Animados Virais Usando o Claude (Fluxo Completo)"** e **"Como Fazer
+Shorts Animados Virais em 3D com o Claude (Passo a Passo Completo)"**, em português.
 
-Ela faz shorts animados verticais contando uma história: bonecos 2D chapados num mundo 3D colorido, com contorno preto,
-cidade pintada, fundo desfocado, câmera deslizando, narração e sons. Tudo é feito com código (three.js dentro do Remotion),
-no seu computador, sem gerador de vídeo de IA.
+Ela faz shorts animados verticais contando uma história, em **2D ou 3D** (o Claude te pergunta qual você quer):
+- **2D**: bonecos chapados, tipo figurinha, num mundo 3D colorido. Exemplo: **a Torre de Pisa** (`templates/pisa/`).
+- **3D**: bonecos 3D de verdade, com volume, luz, sombra e a câmera girando em volta. Exemplo: **o Santos Dumont barrado
+  no aeroporto** (`templates/dumont3d/`).
 
-Exemplo pronto: **A Torre de Pisa** (`templates/pisa/`), o desenho mostrado no vídeo.
+Tudo com contorno preto, mundo pintado, fundo desfocado, câmera deslizando, narração e sons, feito com código (three.js
+dentro do Remotion), no seu computador, sem gerador de vídeo de IA.
 
 ## Como instalar (3 passos)
 1. Abra o **Claude Code** e cole:
@@ -14,7 +17,7 @@ Exemplo pronto: **A Torre de Pisa** (`templates/pisa/`), o desenho mostrado no v
 2. Ele copia a pasta para `~/.claude/skills/desenho-animado/` e prepara o projeto (`templates/projeto/`: Remotion,
    three.js, Node e ffmpeg).
 3. Peça o vídeo:
-   > faz um desenho animado contando a história de …
+   > usa a skill de desenho animado e faz um short de 20 segundos, com bonecos em 3D, contando essa história: …
 
 O Claude escreve a história, monta o mundo, anima os bonecos, confere foto por foto e te entrega o vídeo.
 
@@ -26,6 +29,8 @@ Você precisa de: um computador, o **Claude Code**, o **Node** e o **ffmpeg**.
 | `SKILL.md` | O passo a passo completo pro Claude: todas as regras, os consertos e os valores do visual |
 | `templates/pisa/` | O desenho da Torre de Pisa inteiro (mundo, torre andar por andar, bonecos, câmera, tempos da narração) |
 | `templates/bridge/` | O primeiro exemplo do estilo (a ponte), já com o conserto da tela em branco |
+| `templates/dumont3d/` | O desenho 3D do Santos Dumont: bonecos 3D com cotovelo e joelho, aeroporto, Paris 1906, 14-Bis, câmera |
+| `references/3d/` | Fotos do 3D: o erro de manequim, o resultado consertado, o aeroporto e o 14-Bis |
 | `templates/projeto/` | Um projeto Remotion pronto pra rodar (`package.json`, `src/index.ts`, `src/Root.tsx`, script de fotos) |
 | `templates/audio/` | Os sons e a música feitos por código, com a mixagem |
 | `templates/scripts/` | Ajudantes: fotos de conferência, comparação lado a lado, conferência quadro a quadro |
