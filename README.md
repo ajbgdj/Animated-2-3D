@@ -1,4 +1,4 @@
-# Animated 2D/3D Xavier
+# Animated 2D/3D
 
 A skill grátis dos vídeos **"Como Fazer Shorts Animados Virais Usando o Claude (Fluxo Completo)"** e **"Como Fazer
 Shorts Animados Virais em 3D com o Claude (Passo a Passo Completo)"**, em português.
