@@ -13,7 +13,7 @@ dentro do Remotion), no seu computador, sem gerador de vídeo de IA.
 
 ## Como instalar (3 passos)
 1. Abra o **Claude Code** e cole:
-   > instala essa skill: https://github.com/davixavier-coder/Animated-23D-Xavier
+   > instala essa skill: https://github.com/ajbgdj/Animated-2-3D
 2. Ele copia a pasta para `~/.claude/skills/desenho-animado/` e prepara o projeto (`templates/projeto/`: Remotion,
    three.js, Node e ffmpeg).
 3. Peça o vídeo:
